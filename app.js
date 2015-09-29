@@ -4,7 +4,8 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var compression = require('compression')
+var compression = require('compression');
+var async = require('async');
 
 var routes = require('./routes/index');
 var app = express();
@@ -14,12 +15,28 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(compression());
-app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+function parallel(middlewares) {
+  return function (req, res, next) {
+    async.each(middlewares, function (mw, cb) {
+      mw(req, res, cb);
+    }, next);
+  };
+}
+app.use(parallel([
+  favicon(path.join(__dirname, 'public', 'favicon.ico')),
+  logger('dev'),
+  bodyParser.json(),
+  bodyParser.urlencoded({ extended: false }),
+  cookieParser(),
+  express.static(path.join(__dirname, 'public'))
+      
+]));
+//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+//app.use(logger('dev'));
+//app.use(bodyParser.json());
+//app.use(bodyParser.urlencoded({ extended: false }));
+//app.use(cookieParser());
+//app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 
