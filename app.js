@@ -22,16 +22,14 @@ function parallel(middlewares) {
     }, next);
   };
 }
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(parallel([
-  favicon(path.join(__dirname, 'public', 'favicon.ico')),
   logger('dev'),
   bodyParser.json(),
   bodyParser.urlencoded({ extended: false }),
   cookieParser(),
   express.static(path.join(__dirname, 'public'))
-      
 ]));
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 //app.use(logger('dev'));
 //app.use(bodyParser.json());
 //app.use(bodyParser.urlencoded({ extended: false }));
