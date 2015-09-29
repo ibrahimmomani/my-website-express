@@ -92,7 +92,7 @@ ol.linenums {
   margin-bottom: 0;
   }
 .container {
-  width: 970px !important;
+  max-width: 970px !important;
   }
 .page-headline {
   padding: 73px 0 110px;
